@@ -21,21 +21,20 @@ def get_news():
     # }
 
     # Headers
-    headers = {
-        "Authorization": f"Bearer {API_KEY}"
-    }
+    # headers = {
+    #     "Authorization": f"Bearer {API_KEY}"
+    # }
 
     try:
         # Make the request
-        response = requests.get(url, headers=headers)
+        response = requests.get(url)
         
         if response.status_code == 200:
             data = response.json()
-            articles = data.get('results', [])
             return jsonify({
                 'status': 'success',
-                'count': len(articles),
-                'articles': articles
+                'count': len(data),
+                'articles': data
             })
         else:
             return jsonify({
