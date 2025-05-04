@@ -11,30 +11,31 @@ API_KEY = 'api_live_1YQWckfPTmil9DkbuXbBJxbF62hAWyGjZLrv6NsuXHDatSdQTDB0uSak'
 @app.route('/api/news', methods=['GET'])
 def get_news():
     # Base URL for everything endpoint
-    url = " https://inshorts.com/api/en/search/trending_topics/agriculture&max_limit=10&include_card_data=true"
+    url = "https://api.apitube.io/v1/news/everything"
 
     # Parameters for the request
-    # params = {
-    #     "per_page": 10,
-    #     "api_key": API_KEY,
-    #     'topic.id': 'industry.agriculture_news'
-    # }
+    params = {
+        "per_page": 10,
+        "api_key": API_KEY,
+        'topic.id': 'industry.agriculture_news'
+    }
 
     # Headers
-    # headers = {
-    #     "Authorization": f"Bearer {API_KEY}"
-    # }
+    headers = {
+        "Authorization": f"Bearer {API_KEY}"
+    }
 
     try:
         # Make the request
-        response = requests.get(url)
+        response = requests.get(url, headers=headers, params=params)
         
         if response.status_code == 200:
             data = response.json()
+            articles = data.get('results', [])
             return jsonify({
                 'status': 'success',
-                'count': len(data),
-                'articles': data
+                'count': len(articles),
+                'articles': articles
             })
         else:
             return jsonify({
