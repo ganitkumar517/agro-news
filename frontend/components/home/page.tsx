@@ -1,13 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import dayjs from 'dayjs';
 import { useGetAllNewsQuery } from '@/store/api/homeApi';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function HomePage() {
     const router = useRouter();
     const { data, isLoading, error } = useGetAllNewsQuery({});
+    const [imageErrors, setImageErrors] = useState<{ [key: string]: boolean }>({});
 
     const handleArticleClick = (links: any[]) => {
         // Get the first link that is not an email protection link
@@ -15,6 +17,13 @@ export default function HomePage() {
         if (validLink?.url) {
             window.open(validLink.url, '_blank');
         }
+    };
+
+    const handleImageError = (articleId: number) => {
+        setImageErrors(prev => ({
+            ...prev,
+            [articleId]: true
+        }));
     };
 
     if (isLoading) {
@@ -39,13 +48,30 @@ export default function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {data?.articles.map((article: any) => (
                     <div key={article.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                        {article.image && (
-                            <img
-                                src={article.image}
-                                alt={article.title}
-                                className="w-full h-48 object-cover"
-                            />
-                        )}
+                        <div className="relative w-full h-48 bg-gray-100">
+                            {article.image && !imageErrors[article.id] ? (
+                                <img
+                                    src={article.image}
+                                    alt={article.title}
+                                    className="w-full h-48 object-cover"
+                                    onError={() => handleImageError(article.id)}
+                                />
+                            ) : (
+                                <div className="w-full h-48 flex items-center justify-center bg-green-50">
+                                    <svg
+                                        className="w-16 h-16 text-green-200"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                </div>
+                            )}
+                        </div>
                         <div className="p-4">
                             <div className="flex items-center mb-2">
                                 <img
@@ -57,7 +83,7 @@ export default function HomePage() {
                                     {article.source.domain} • {dayjs(article.published_at).format('MMM D, YYYY')}
                                 </span>
                             </div>
-                            <h2 className="text-xl font-semibold mb-2 line-clamp-2">{article.title}</h2>
+                            <h2 className="text-xl font-semibold mb-2 line-clamp-2 hover:underline cursor-pointer" onClick={() => handleArticleClick(article.links)}>{article.title}</h2>
                             <p className="text-gray-600 mb-4 line-clamp-3">{article.description}</p>
                             <div className="flex flex-wrap gap-2">
                                 {article.categories.slice(0, 3).map((category: any) => (
