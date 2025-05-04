@@ -5,13 +5,13 @@ const baseURl = process.env.NEXT_PUBLIC_BASE_URL;
 export const homeApi = createApi({
     reducerPath: "homeApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "https://api.epicred.in/api/v1",
+        baseUrl: "https://agro-news.onrender.com/api/",
     }),
     endpoints: (builder) => ({
-        getAllCourses: builder.query({
+        getAllNews: builder.query({
             query: (params) => ({
                 method: "get",
-                url: "/courses/all-courses",
+                url: "/news",
                 params
             }),
         }),
@@ -19,5 +19,5 @@ export const homeApi = createApi({
 });
 
 export const {
-    useGetAllCoursesQuery,
+    useGetAllNewsQuery,
 } = homeApi;
