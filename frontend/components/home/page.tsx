@@ -83,7 +83,12 @@ export default function HomePage() {
                                     {article.source.domain} • {dayjs(article.published_at).format('MMM D, YYYY')}
                                 </span>
                             </div>
-                            <h2 className="text-xl font-semibold mb-2 line-clamp-2 hover:underline cursor-pointer" onClick={() => handleArticleClick(article.links)}>{article.title}</h2>
+                            <button
+                                className="text-xl font-semibold mb-2 line-clamp-2 hover:underline cursor-pointer text-left w-full"
+                                onClick={() => handleArticleClick(article.links)}
+                            >
+                                {article.title}
+                            </button>
                             <p className="text-gray-600 mb-4 line-clamp-3">{article.description}</p>
                             <div className="flex flex-wrap gap-2">
                                 {article.categories.slice(0, 3).map((category: any) => (
